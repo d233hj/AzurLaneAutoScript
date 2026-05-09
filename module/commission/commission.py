@@ -11,6 +11,7 @@ from module.commission.preset import DICT_FILTER_PRESET, SHORTEST_FILTER
 from module.commission.project import COMMISSION_FILTER, Commission
 from module.config.config_generated import GeneratedConfig
 from module.config.utils import get_server_last_update, get_server_next_update
+from module.dorm.dorm import RewardDorm
 from module.exception import GameStuckError
 from module.handler.info_handler import InfoHandler
 from module.logger import logger
@@ -557,6 +558,15 @@ class RewardCommission(UI, InfoHandler):
                     # no need to reset click_timer, just instant click REWARD_1
                     # click_timer.reset()
                     continue
+                # handle oil maxed
+                # run once to prevent accidental oil consumption
+                if self.config.SERVER in ['cn']:
+                    if self.appear(OIL_MAXED, offset=(20, 20), interval=3):
+                        logger.info("Oil maxed, buy food to consume oil")
+                        RewardDorm(self.config, self.device).dorm_run(
+                            feed=False, collect=False, buy_furniture=False, buy_food=10)
+                        self.ui_ensure(page_reward)
+                        continue
                 # Check GET_SHIP at last to handle random white background at page_main
                 for button in [GET_SHIP]:
                     if click_timer.reached() and self.appear(button, interval=1):
