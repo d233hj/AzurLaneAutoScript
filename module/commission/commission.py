@@ -563,8 +563,7 @@ class RewardCommission(UI, InfoHandler):
                 if self.config.SERVER in ['cn']:
                     if self.appear(OIL_MAXED, offset=(20, 20), interval=3):
                         logger.info("Oil maxed, buy food to consume oil")
-                        RewardDorm(self.config, self.device).dorm_run(
-                            feed=False, collect=False, buy_furniture=False, buy_food=10)
+                        RewardDorm(self.config, self.device).dorm_food_run(amount=10)
                         self.ui_ensure(page_reward)
                         continue
                 # Check GET_SHIP at last to handle random white background at page_main
